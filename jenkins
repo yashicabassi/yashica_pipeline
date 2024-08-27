@@ -1,134 +1,83 @@
 pipeline {
     agent any
-    triggers {
-        pollSCM('H/5 * * * *') // Polls GitHub every 5 minutes for new commits
-    }
-
-    environment {
-        // Define any global environment variables here
-        GITHUB_REPO = 'https://github.com/your-repo.git'
-        EMAIL_RECIPIENT = 'yashicabassi@gmail.com'
-    }
-
     stages {
         stage('Build') {
             steps {
-                echo "Building the code..."
-                echo "Using Maven for build automation"
-                echo "Description: Compiling and packaging the code."
-                // Example: sh 'mvn clean package'
+                echo "Fetch the source code from ${env.DIRECTORY_PATH}"
+                echo "Compile the code and generate any necessary artifacts"
+                echo "Use Maven for automation"
             }
         }
-
         stage('Unit and Integration Tests') {
             steps {
-                echo "Running Unit and Integration Tests..."
-                echo "Using JUnit for Unit Tests and Postman for Integration Tests"
-                echo "Description: Ensuring the code functions as expected and components work together."
-                // Example: sh 'mvn test'
-                // Example: sh 'newman run collection.json'
+                echo "Unit tests"
+                echo "Integration tests"
+                echo "JUnit (Unit Tests) and Postman (Integration Tests)"
             }
             post {
                 success {
-                    emailext(
-                        body: """Unit and Integration Tests have passed successfully.
-                                 Attached are the test logs.
-                                 Please review the build details at ${env.BUILD_URL}""",
-                        to: "${env.EMAIL_RECIPIENT}",
-                        subject: "Unit and Integration Tests Successful",
-                        attachmentsPattern: 'test.log',
-                        attachLog: true
-                    )
+                    emailext body: "Unit and Integration Tests have passed successfully. Attached are the test logs.",
+                             to: 'yashicabassi@gmail.com',
+                             subject: "Unit and Integration Tests Successful",
+                             attachmentsPattern: 'test.log',
+                             attachLog: true
                 }
                 failure {
-                    emailext(
-                        body: """Unit and Integration Tests have failed.
-                                 Attached are the test logs.
-                                 Please review the build details at ${env.BUILD_URL}""",
-                        to: "${env.EMAIL_RECIPIENT}",
-                        subject: "Unit and Integration Tests Failed",
-                        attachmentsPattern: 'test.log',
-                        attachLog: true
-                    )
+                    emailext body: "Unit and Integration Tests have failed. Attached are the test logs.",
+                             to: 'yashicabassi@gmail.com',
+                             subject: "Unit and Integration Tests Failed",
+                             attachmentsPattern: 'test.log',
+                             attachLog: true
                 }
             }
         }
-
         stage('Code Analysis') {
             steps {
-                echo "Performing Code Analysis..."
-                echo "Using SonarQube Scanner for Jenkins"
-                echo "Description: Analyzing the code for quality and industry standards."
-                // Example: sh 'sonar-scanner'
+                echo "Perform code analysis"
+                echo "SonarQube Scanner for Jenkins plugin"
             }
         }
-
         stage('Security Scan') {
             steps {
-                echo "Performing Security Scan..."
-                echo "Using OWASP Dependency-Check"
-                echo "Description: Scanning the code for vulnerabilities."
-                // Example: sh 'dependency-check.sh'
+                echo "Perform scan to find vulnerabilities"
+                echo "OWASP Dependency-Check plugin"
             }
             post {
                 success {
-                    emailext(
-                        body: """Security Scan has completed successfully.
-                                 Attached are the scan logs.
-                                 Please review the build details at ${env.BUILD_URL}""",
-                        to: "${env.EMAIL_RECIPIENT}",
-                        subject: "Security Scan Successful",
-                        attachmentsPattern: 'scan.log',
-                        attachLog: true
-                    )
+                    emailext body: "Security Scan has completed successfully. Attached are the test logs.",
+                             to: 'yashicabassi@gmail.com',
+                             subject: "Security Scan Successful",
+                             attachmentsPattern: 'test.log',
+                             attachLog: true
                 }
                 failure {
-                    emailext(
-                        body: """Security Scan has failed.
-                                 Attached are the scan logs.
-                                 Please review the build details at ${env.BUILD_URL}""",
-                        to: "${env.EMAIL_RECIPIENT}",
-                        subject: "Security Scan Failed",
-                        attachmentsPattern: 'scan.log',
-                        attachLog: true
-                    )
+                    emailext body: "Security Scan has failed. Attached are the test logs.",
+                             to: 'yashicabassi@gmail.com',
+                             subject: "Security Scan Failed",
+                             attachmentsPattern: 'test.log',
+                             attachLog: true
                 }
             }
         }
-
         stage('Deploy to Staging') {
             steps {
-                echo "Deploying to Staging..."
-                echo "Using AWS EC2 instance for deployment"
-                echo "Description: Deploying the application to the staging server."
-                // Example: sh 'deploy-staging.sh'
+                echo "Deploy application to staging server"
+                echo "Use tool such as AWS"
             }
         }
-
         stage('Integration Tests on Staging') {
             steps {
-                echo "Running Integration Tests on Staging..."
-                echo "Using JUnit or another test framework"
-                echo "Description: Ensuring the application works as expected in a staging environment."
-                // Example: sh 'mvn integration-test'
+                echo "Run integration tests on staging"
+                echo "Use tool such as JUnit"
             }
         }
-
         stage('Deploy to Production') {
             steps {
-                echo "Deploying to Production..."
-                echo "Using AWS EC2 instance for production deployment"
-                echo "Description: Deploying the application to the production server."
-                // Example: sh 'deploy-production.sh'
+                echo "Deploy application to production"
+                echo "Use AWS"
             }
-        }
-    }
-
-    post {
-        always {
-            echo "Pipeline completed."
-            // You can add additional cleanup or notification steps here if needed
         }
     }
 }
+
 
